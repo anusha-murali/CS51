@@ -1,0 +1,156 @@
+21,23c43
+< open Set
+< open Collections
+< (* open Puzzledescription *)
+---
+> (* open Puzzledescription  *)
+30c50
+<     val solve : unit -> move list * state list
+>     val solve : unit -> move list * state list  
+<     val print_state: state -> unit
+---
+>     val print_state : state -> unit 
+<      (functor(sig type t end -> COLLECTION)) -> PUZZLEDESCRIPTION -> PUZZLESOLVER
+---
+>      (functor (sig type t end -> COLLECTION)) 
+>            -> PUZZLEDESCRIPTION 
+>            -> PUZZLESOLVER
+< module MakePuzzleSolver (MakeCollection
+< 			 : functor (Element : sig type t end) ->
+< 				   (COLLECTION with type elt = Element.t))
+< 			(G : PUZZLEDESCRIPTION)
+<        : (PUZZLESOLVER with type state = G.state
+< 			and type move = G.move) =
+---
+> module MakePuzzleSolver
+>          (MakeCollection
+>             : functor (Element : sig type t end) ->
+>                       (Collections.COLLECTION with type elt = Element.t))
+>          (Puzzle : PUZZLEDESCRIPTION)
+>          (Element : sig type t end)
+>        : (PUZZLESOLVER with type state = Puzzle.state
+>                         and type move = Puzzle.move) =
+74d98
+< 
+76,77d99
+<     type state = G.state
+<     type move = G.move
+79,88c101
+<     module Pending = MakeCollection(
+<       struct
+<         type t = state * (move list)
+<       end)
+< 
+<     module Visited = Set.Make(
+<       struct
+<         type t = state
+<         let compare = G.compare_states
+<       end)
+---
+> (*    module Collection = MakeCollection(Element) *)
+90,93c103
+<     let solve () : (move list * state list) =
+<       let pending = Pending.add (G.initial_state, []) Pending.empty in
+<       let visited = Visited.singleton G.initial_state in
+<       let expanded = [] in
+---
+>     type state = Puzzle.state
+95,96c105,133
+<       let rec search (p : Pending.collection) (v : Visited.t) (e : state list) =
+<         if Pending.is_empty p then raise CantReachGoal
+---
+>     type move = Puzzle.move
+> 
+>     (* Pending collection is maintained as a tuple of state and the list of
+>        sequences of moves that were made to reach that state *) 
+>     module PendingStates = MakeCollection(
+>                      struct
+>                        type t = state * (move list)
+>                      end
+>                      )
+> 
+>     (* VisitedStates is a set that contains those states that have already
+>        been visited, and therefore have been removed from the PendingStates *) 
+>     module VisitedStates = Set.Make(
+>                     struct
+>                       type t = state
+>                       let compare = Puzzle.compare_states
+>                     end
+>                     )
+> 
+>     let solve () : (move list * state list) =
+>       (* Initialize PendingStates with initial_state and an empty list of moves *)
+>       let pendingList = PendingStates.add (Puzzle.initial_state, []) 
+>                                        PendingStates.empty in
+>       let visitedList = VisitedStates.singleton Puzzle.initial_state in
+>       let tempList = [] in
+>       let rec find_goal (pL : PendingStates.collection) 
+>                         (vL : VisitedStates.t) 
+>                         (tL : state list) =
+>         if (PendingStates.is_empty pL) then raise CantReachGoal
+98,115c135,159
+<           let (current_state, movelist), col = Pending.take p in
+<             if G.is_goal current_state then List.rev movelist, List.rev e
+<             else
+<               let rec add_n (n : (state * move) list)
+<                             (p2 : Pending.collection)
+<                             (v2 : Visited.t)
+<                             (moves : move list) =
+<               match n with
+<               | [] -> p2, v2
+<               | (state, mv) :: tl ->
+<                   if not (Visited.mem state v2)
+<                     then add_n tl (Pending.add (state, mv :: moves) p2)
+<                                   (Visited.add state v2)
+<                                   moves
+<                   else add_n tl p2 v2 moves in
+<                   let p3, v3 = add_n (G.neighbors current_state) col v movelist in
+<               search p3 v3 (current_state :: e) in
+<         search pending visited expanded
+---
+>           let ((currState, moveList), currentPS) = PendingStates.take pL in
+>              (* If goal state is reached then output the results *)
+>              if Puzzle.is_goal currState then List.rev moveList, List.rev tL
+>              else
+>                (* add the moves and states *)
+>                let rec addMovesStates(cList : (state * move) list)
+>                                      (pSa : PendingStates.collection)
+>                                      (vSa : VisitedStates.t)
+>                                      (moves : move list) =
+>                match cList with
+>                | [] -> pL, vSa
+>                | (thisState, thisMove) :: tl ->
+>                  if not (VisitedStates.mem thisState vSa)
+>                    then addMovesStates tl 
+>                                  (PendingStates.add (thisState, thisMove :: moves) pSa)
+>                                  (VisitedStates.add thisState vSa)
+>                                  moves
+>                  else addMovesStates tl pSa vSa moves in
+>                  let newPL, newVL = 
+>                    addMovesStates (Puzzle.neighbors currState) 
+>                                    currentPS 
+>                                    vL 
+>                                    moveList in
+>                find_goal newPL newVL (currState :: tL) in
+>           find_goal pendingList visitedList tempList 
+117c161,163
+<     let print_state = G.print_state
+---
+>     let print_state = Puzzle.print_state
+> 
+>   end ;;
+119d164
+<   end
+121c166
+< (* DFSSolver and BFSSolver: Higher-order functors that take in a
+---
+> (* DFSSolver and BFSSolver -- Higher-order functors that take in a
+125,127c170,173
+< module DFSSolver = MakePuzzleSolver(MakeStackList) ;;
+< module BFSSolver = MakePuzzleSolver(MakeQueueList) ;;
+< module FastBFSSolver = MakePuzzleSolver(MakeQueueStack) ;;
+---
+> module DFSSolver = MakePuzzleSolver (MakeStackList) ;;
+> module BFSSolver = MakePuzzleSolver (MakeQueueList) ;;
+> module FastBFSSolver = MakePuzzleSolver (MakeQueueStack) ;;
+> 

@@ -1,0 +1,22 @@
+### Starting build.
+# Target: tests.ml.depends, tags: { extension:ml, file:tests.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+ocamldep.opt -modules tests.ml > tests.ml.depends
+# Target: CS.ml.depends, tags: { extension:ml, file:CS.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+ocamldep.opt -modules CS.ml > CS.ml.depends
+# Target: collections.ml.depends, tags: { extension:ml, file:collections.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+ocamldep.opt -modules collections.ml > collections.ml.depends
+# Target: mazes.ml.depends, tags: { extension:ml, file:mazes.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+ocamldep.opt -modules mazes.ml > mazes.ml.depends
+# Target: draw.ml.depends, tags: { extension:ml, file:draw.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+ocamldep.opt -modules draw.ml > draw.ml.depends
+# Target: puzzledescription.ml.depends, tags: { extension:ml, file:puzzledescription.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+ocamldep.opt -modules puzzledescription.ml > puzzledescription.ml.depends
+# Target: draw.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:draw.cmo, file:draw.ml, implem, ocaml, quiet, thread, traverse, use_graphics, use_unix }
+ocamlc.opt -c -thread -o draw.cmo draw.ml
++ ocamlc.opt -c -thread -o draw.cmo draw.ml
+File "draw.ml", line 5, characters 11-19:
+5 | module G = Graphics ;;
+               ^^^^^^^^
+Error: Unbound module Graphics
+Command exited with code 2.
+# Compilation unsuccessful.
