@@ -1,0 +1,120 @@
+\documentclass{beamer}
+
+% \usepackage{beamerthemesplit} // Activate for custom appearance
+
+\title{Example Presentation Created with the Beamer Package}
+\author{Till Tantau}
+\date{\today}
+
+\begin{document}
+
+\frame
+{
+  \frametitle{PSET8}
+
+\begin{enumerate}
+\item Greetings!
+\item This is a demo of simulating an infectious process
+\item We have a simulation developed in OCaml using object oriented programming concepts
+\item First I am going to show you my simulation of the infectious process with the default values in the config.ml file
+\item Then I will show you how the infectious process evolves when we change various parameters in the config.ml file
+\end{enumerate}
+ }
+ 
+ 
+ \frame
+{
+  \frametitle{Simulation with the default parameters}
+
+\begin{enumerate}
+\item Here I am showing the simulation with the default parameter values
+\item On the LHS, we see how susceptible individuals are getting infected
+\item Susceptible individuals are shown in BLUE
+\item Infected individuals are shown in RED with a circle around it
+\item The radius of the red circles is proportional to the required social distancing
+\item The gray crosses correspond to the diseased individuals
+\end{enumerate}
+ }
+ 
+  
+ \frame
+{
+  \frametitle{Simulation with the default parameters}
+
+\begin{enumerate}
+\item On the RHS, we have a stacked bar graph, which is quite informative
+\item The gray area at the bottom of the graph corresponds to the diseased people
+\item The red area corresponds to the infected people
+\item The blue area corresponds to the suscebtile people
+\item And finally the black area at the top corresponds to the folks, who have recovered and are now immune to the disease
+\item At the bottom, we have the statistics about the population
+\item From the left to right, these numbers are XX of diseased, XX of infected, XX of susceptible and XX of recovered and have immunity
+\end{enumerate}
+ }
+ 
+ 
+ 
+ \frame
+{
+  \frametitle{Changing the default parameter values}
+  
+\begin{enumerate}
+\item Let me now repeat the simulation, after changing certain parameter values
+\item I am going to update the config.ml file and compile again
+\item BTW, the file, config.ml, has all the parameter values that we can play around with and observe how the changes affect the infectious process
+\item I am going to change the NEIGHBOR\_RADIUS from its default value of 4 to 1. 
+\item What does it mean?
+\item It means that now less people will become infected. Because, the infection does not spread that far away from an infected person
+\item Let me recompile and re-run the experiment...
+\end{enumerate}
+ 
+ }
+ 
+ 
+  \frame
+{
+\frametitle{Changing the default parameter values}
+  
+\begin{enumerate}
+\item Let me now change the NEIGHBOR\_RADIUS to 8
+\item What will it do?
+\item It means that the disease is more contagious - it can spread to more people than before
+\item Let me recompile and re-run the experiment
+\item As we can see, a lot more people got infected - and consequently, a lot more people died as a result of the infection
+\end{enumerate}
+  }
+  
+\frame
+{
+\frametitle{Changing the default parameter values}
+
+\begin{enumerate}
+\item Now, let me increase the IMMUNITY PERIOD
+item First, let me change the NEIGHBOR\_RADIUS to 4
+\item The default immunity duration is 100 time steps
+\item Let me change it to 200 time steps
+\item This means a person who was previously infected and recovered will have twice as long as immune to the disease
+\item Let me recompile and re-run. 
+\item Here it is ... As we can see, more people have recovered and are immune to the disease. Because the black area is very large
+\end{enumerate}
+}
+
+
+\frame
+{
+\frametitle{Changing the default parameter values}
+
+\begin{enumerate}
+\item There are many more parameters that we can change and see how the infectious process are impacted by those changes
+\item For  example, the probability of mortality or mortality rate
+\item The default value in the config.ml file is 0.02
+\item However, for certain infectious diseases this can be higher
+\item For both the IMMUNITY PERIOD and RECOVERY PERIOD, not only can we change their mean values, but also the standard deviation - so this simulation can very closely model a true infectious process
+\item Thank you so much!
+\end{enumerate}
+
+
+
+}
+ 
+\end{document}

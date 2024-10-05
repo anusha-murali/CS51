@@ -1,0 +1,87 @@
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\usepackage[bottom=10em]{geometry}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{amssymb}
+\usepackage{eurosym}
+\usepackage{graphicx}
+
+\usepackage{sectsty}
+\allsectionsfont{\centering \normalfont\scshape}
+\usepackage{fancyhdr} %custom header stuff
+\pagestyle{fancyplain} 
+\fancyhead{}
+
+\usepackage{empheq}
+
+%set up footers
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+
+%
+%disable section-specific equation numbering
+%\numberwithin{equation}{section}
+%\numberwithin{figure}{section}
+%\numberwithin{table}{section}
+%
+\setlength\parindent{0pt}
+
+%-------------------
+%define necessary macros
+%-------------------
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand{\lb}{\langle}
+\newcommand{\rb}{\rangle}
+\newcommand{\im}{\textup{im }}
+\newcommand{\tr}{\textup{tr }}
+\newcommand{\Var}{\textup{Var }}
+\newcommand{\Erf}{\textup{Erf }}
+
+\usepackage{Courier}
+
+\begin{document}
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\rhead{Jonathan Ma, Rebecca Chen}
+\lhead{CS 51 Problem Set 6 \#4}
+
+\begin{center}
+\Large{Explanation and Proof of Correctness of Our Approach to Part 1}
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\end{center}
+
+\textbf{Proof of Correctness of our Approach}\\
+
+In our approach to the problem, we create two refs which will traverse the given mutable list. These refs are denoted \texttt{fast} and \texttt{slow} in our code. In each iteration, \texttt{fast} travels two nodes down the mutable list and \texttt{slow} travels one node down the mutable list. We make the following claim:\\
+
+\textit{Claim.} The \texttt{fast} and \texttt{slow} refs become physically equal at any time after the start if and only if the mutable list contains a cycle.\\
+
+\textit{Proof.}\\
+($\Rightarrow$): We must prove that if \texttt{fast == slow} at some time after the start, the mutable list contains a cycle. This is equivalent to proving that if the list in fact contains no cycle, then \texttt{fast} never physically equals \texttt{slow} at any time after the start. Indeed this is obvious because if there is no cycle, then \texttt{fast} surely arrives at the end of the list (i.e. it becomes \texttt{Nil}) before \texttt{slow}, causing the termination of \texttt{cycle\_len\_start\_helper} before \texttt{slow} physically equals \texttt{fast}.\\
+
+($\Leftarrow$): We must prove that if the mutable list contains a cycle, then \texttt{fast == slow} at some time after the start. Consider any arbitrary list with a cycle of arbitrary length starting at an arbitrary node. The key insight here is that once either \texttt{fast} or \texttt{slow} enters the cycle, it never leaves the cycle by the very definition of a cycle (each node is the \texttt{Cons} of a value and the next node in the cycle, so when we advance our refs they stay within the cycle).\\
+
+Thus, when \texttt{slow} enters the cycle, \texttt{fast} is surely still in the cycle. Let the distance of \texttt{slow} from \texttt{fast} at this time be $n$ (i.e.  \texttt{slow} is $n$ nodes in front of \texttt{fast} in the direction of \texttt{fast}'s travel along the cycle). However, since in each iteration \texttt{fast} advances two nodes along the cycle whereas \texttt{slow} advances one node, the distance between the two decreases by 1 node for each iteration. Thus, as long as the cycle is not of infinite length, at some time after the start \texttt{fast} must equal \texttt{slow} when the distance $n$ between them decreases to 0.\\\\
+
+\textbf{Application to problem requirements}\\
+
+Besides a Boolean indicating the presence or absence of a cycle, \texttt{cycle\_len\_start\_helper} also returns the length of the cycle (if it exists and -1 otherwise), the length of the list prior to the start of the cycle (which equals the overall length of the list if no cycle is present), a reference to the node at which the cycle starts, and a reference to the predecessor of that node in the cycle. The remainder of this document explains the calculation of these return values.\\
+
+\textit{Cycle Length}. If a cycle does not exist, we return -1 (to distinguish it from any valid cycle length). If a cycle exists, then from our approach to ascertain the existence of the cycle, we know that the node at which \texttt{fast == slow} is surely a node on the cycle. Then, we simply advance a new ref from that node, incrementing a counter by 1 each time starting from 0. When the new reference is physically equal to \texttt{fast} (i.e. has returned to the node at which it started) then the value of the counter surely equals the length of the cycle.\\
+
+\textit{Cycle Start Node}. In order to calculate the cycle start node (to visualize, this is the first node with value 2 in the diagram given in the problem set 6 spec), we create two references, \texttt{ahead} and \texttt{behind}. We advance \texttt{ahead} by a distance equal to the cycle length we just calculated while leaving \texttt{behind} at the start of the list. Then, we advance the two references in tandem (using \texttt{tandem\_advance\_to\_start}). When these two references become equal, the node at which they become equal is surely the head of the cycle.\\
+
+\textit{Length Prior to Cycle}. If there is no cycle, this is trivially calculated by incrementing a counter every time \texttt{fast} advances. If there is a cycle, this is calculated with a counter that increments in tandem with the \texttt{behind} reference's advance to the start of the cycle (since \texttt{behind} travels from the start of the list to the start of the cycle, thereby yielding the length we desire).\\
+
+\textit{Predecessor to Cycle Start in Cycle}. In \texttt{tandem\_advance\_to\_start}, as \texttt{ahead} is being advanced, we keep track of the predecessor to \texttt{ahead} as a reference. Upon termination of this function, we return this predecessor, which now must refer to the node in the cycle prior to the start of the cycle. \\
+
+We already described how to determine whether a cycle exists. The \texttt{flatten} function is easily written by setting the predecessor to the cycle start to a mutable list with value equal to the \texttt{Cons} its original value and \texttt{Nil}, which effectively removes its connection to the start of the cycle and thereby ``flattens'' the list. The \texttt{mlength} function trivially returns the sum of the length prior to the cycle and the pre-cycle length if a cycle exists, or only the pre-cycle length if a cycle does not exist. 
+\end{document}

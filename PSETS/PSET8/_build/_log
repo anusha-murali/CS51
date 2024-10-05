@@ -1,0 +1,7 @@
+### Starting build.
+# Target: run.ml.depends, tags: { package(CS51Utils), package(graphics), warn(A-4-33-40-41-42-43-34-44), extension:ml, file:run.ml, ocaml, ocamldep, quiet, strict-sequence, thread, traverse, use_str }
+ocamlfind ocamldep -package graphics -package CS51Utils -modules run.ml > run.ml.depends
++ ocamlfind ocamldep -package graphics -package CS51Utils -modules run.ml > run.ml.depends
+ocamlfind: Package `graphics' not found
+Command exited with code 2.
+# Compilation unsuccessful.
