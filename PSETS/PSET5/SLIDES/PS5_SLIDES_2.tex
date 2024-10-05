@@ -1,0 +1,298 @@
+\documentclass{beamer}
+%\documentclass[xcolor={dvipsnames,table}]{beamer}
+%\usetheme{Warsaw}
+%\usetheme{AnnArbor}
+%\usetheme{Frankfurt}
+\usetheme{Madrid}
+%\setbeamertemplate{title page}[default][colsep=-0bp,rounded=false]
+%\setbeamertemplate{frametitle}[default][colsep=-4bp,rounded=false,shadow=false]
+%\setbeamertemplate{blocks}[rounded][shadow=false]
+
+
+\title{PSET5: Ordered Collections \\ Priority Queues}
+
+
+\date{March 17, 2023}
+
+\author{Anusha Murali}
+
+
+\usepackage{tikz-qtree}
+\begin{document}
+
+%\frame{\titlepage}
+
+\begin{frame}[fragile]
+\titlepage
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Tasks to do}
+
+\begin{block}{Part II: Implement Ordered Collections with Priority Queues}
+\begin{enumerate}
+\item Complete \textcolor{red}{ListQueue}: elements are stored a list
+\item Complete \textcolor{red}{TreeQueue}: elements are stored in a BST
+\item Complete \textcolor{red}{BinaryHeap}: elements are stored in a balanced binary tree
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]
+
+\vspace*{0.5in}
+
+\centerline{\huge ListQueue}
+
+\vspace*{0.2in}
+\begin{center}
+Task: Use a a simple list to store the queue elements in \textcolor{red}{sorted order}.
+\end{center}
+
+\end{frame}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Step 1 Load Files}
+
+\begin{block}{Load Files}
+\begin{enumerate}
+\item \# \#use "order.ml"
+\item \# \#use "orderedcoll.ml"
+\item \# \#use "prioqueue.ml"
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+\begin{frame}{fragile}
+\frametitle{Step 2: Complete the {\tt ListQueue} functor}
+
+\begin{alertblock}{Complete empty}
+\hspace*{1.0in}let empty : queue = \\
+\hspace*{1.15in}      failwith "ListQueue empty not implemented"
+\end{alertblock}
+
+\begin{block}{empty}
+\hspace*{1.0in}let empty : queue = []
+\end{block}
+
+
+\begin{alertblock}{Complete is\_empty}
+\hspace*{1.0in}let is\_empty (q : queue) : bool = \\
+\hspace*{1.15in}      failwith "ListQueue is\_empty not implemented"
+\end{alertblock}
+
+\begin{block}{is\_empty}
+\hspace*{1.0in}let is\_empty (q : queue) : bool = (q = empty)
+\end{block}
+
+\end{frame}
+
+
+
+\frame[fragile]
+\frametitle{Step 2: Complete the {\tt ListQueue} functor}
+
+\begin{alertblock}{Complete add}
+\hspace*{1in}let add (e : elt) (q : queue) : queue = \\
+\hspace*{1.15in}      failwith "ListQueue add not implemented"
+\end{alertblock}
+
+\begin{block}{add}
+\begin{verbatim}
+let rec add (e : elt) (q : queue) : queue =
+      match q with
+      | [] -> e :: []
+      | hd :: tl -> (match Elt.compare e hd with
+                     | Less -> e :: q
+                     | Greater -> hd :: (add e tl)
+                     | Equal -> hd :: (add e tl)
+                     )
+\end{verbatim}
+\end{block}
+\end{frame}
+
+
+
+
+      
+      
+\frame[fragile]
+\frametitle{Step 2: Complete the {\tt ListQueue} functor}
+
+\begin{alertblock}{Complete take}
+\hspace*{1in}let take (q : queue) : elt * queue = \\
+\hspace*{1.15in}      failwith "ListQueue take not implemented"
+\end{alertblock}
+
+\begin{block}{take}
+\begin{verbatim}
+let take (q : queue) : elt * queue =
+      match q with
+      | [] -> raise QueueEmpty
+      | hd :: tl -> (hd, tl)
+\end{verbatim}
+\end{block}
+\end{frame}
+      
+
+
+
+
+\begin{frame}{fragile}
+\frametitle{Step 2: Complete the {\tt ListQueue} functor}
+
+\begin{block}{Re-load prioqueue.ml (with your completed functions)}
+\begin{enumerate}
+\item \# \#use "prioqueue.ml"
+\end{enumerate}
+\end{block}
+
+\begin{example}
+Now the examples in the next slides should work
+\end{example}
+\end{frame}
+      
+      
+\begin{frame}{fragile}
+\frametitle{Test all the new functions}
+
+\begin{example}
+\begin{enumerate}
+\item First create an empty queue called myQ \\
+        \# {\bf  let myQ  = IntListQueue.empty;;}
+\item Check if myQ is empty or not \\
+        \# {\bf IntListQueue.is\_empty myQ}
+\item Insert 65\\
+ \# {\bf let myQ = IntListQueue.add 65 myQ};;
+ \item Print myQ\\
+\# {\bf IntListQueue.to\_string myQ;;}
+\item Insert 7\\
+ \# {\bf let myQ = IntListQueue.add 7 myQ};;
+ \item Print myQ\\
+\# {\bf IntListQueue.to\_string myQ;;}
+\end{enumerate}
+\end{example}
+
+\end{frame}
+
+
+\begin{frame}{fragile}
+\frametitle{Test all the new functions}
+
+\begin{example}
+\begin{enumerate}
+\item Check if myQ is empty or not \\
+        \# {\bf IntListQueue.is\_empty myQ}
+\item Insert 29. It should be inserted between 7 and 65\\
+ \# {\bf let myQ = IntListQueue.add 29 myQ};;
+ \item Print myQ\\
+\# {\bf IntListQueue.to\_string myQ;;}
+\item Try the take function. It should return the first element (which is 7 in this case, and it has the highest priority) and the rest of the list. \\
+ \# {\bf let (x, myQ) = IntListQueue.take myQ};;
+ \item Print myQ. It should only have [29;65] now.\\
+\# {\bf IntListQueue.to\_string myQ;;}
+\end{enumerate}
+\end{example}
+\end{frame}
+
+
+\begin{frame}
+
+\centerline{\huge Test using IntString}
+
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{fragile}
+\frametitle{Test all the new functions}
+
+\begin{block}{First create the \textcolor{yellow}{IntStringListQueue} module}
+
+\vspace*{0.1in}
+
+\noindent
+        \# {\bf module IntStringListQueue = (ListQueue(IntStringCompare) : \\
+ \hspace*{0.5in}  PRIOQUEUE with type elt = IntStringCompare.t);;}
+
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}{fragile}
+\frametitle{Test all the new functions}
+
+\begin{example}
+\begin{enumerate}
+\item First create an empty queue called myQ \\
+        \# {\bf  let myQ  = IntStringListQueue.empty;;}
+\item Check if myQ is empty or not \\
+        \# {\bf IntStringListQueue.is\_empty myQ}
+\item Insert (65, "Anusha")\\
+ \# {\bf let myQ = IntStringListQueue.add (65, "Anusha") myQ;; }
+ \item Print myQ\\
+\# {\bf IntStringListQueue.to\_string myQ;;}
+\item Insert (7, "CS51")\\
+ \# {\bf let myQ = IntStringListQueue.add (7, "CS51") myQ};;
+ \item Print myQ\\
+\# {\bf IntStringListQueue.to\_string myQ;;}
+\end{enumerate}
+\end{example}
+
+\end{frame}
+
+
+
+
+\begin{frame}{fragile}
+\frametitle{Test all the new functions}
+
+\begin{example}
+\begin{enumerate}
+\item Check if myQ is empty or not \\
+        \# {\bf IntStringListQueue.is\_empty myQ}
+\item Insert (29, "PHYS143"). It should be inserted between (7, "CS51") and (65, "Anusha")\\
+ \# {\bf let myQ = IntStringListQueue.add (29, "PHYS143") myQ};;
+ \item Print myQ\\
+\# {\bf IntStringListQueue.to\_string myQ;;}
+\item Try the take function. It should return the first element (which is (7, "CS51"), and it has the highest priority) and the rest of the list. \\
+ \# {\bf let (x, myQ) = IntStringListQueue.take myQ};;
+ \item Print myQ. It should only have [(29, "PHYS143"); (65, "Anusha")] now.\\
+\# {\bf IntStringListQueue.to\_string myQ;;}
+\end{enumerate}
+\end{example}
+\end{frame}
+
+
+
+
+
+\begin{frame}{fragile}
+\frametitle{Important comments on ListQueue}
+\begin{block}{Average and worst-case time complexity}
+\begin{enumerate}
+\item On the average, the element is found in the middle of the list. So, we need to search $n/2$ items. So the average time complexity is $O(n)$
+\item In the worst case, the element is found at the end of the list. So, the worst-case time complexity is also $O(n)$
+\end{enumerate}
+\end{block}
+
+\end{frame}
+
+
+\end{document}
+

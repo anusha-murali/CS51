@@ -1,0 +1,34 @@
+\frametitle{Step 2: Complete the {\tt BinaryHeap} functor}
+
+
+\begin{alertblock}{Complete get\_last}
+\hspace*{1.0in}let get\_last (t : tree) : elt * queue =\\
+\hspace*{1.15in}      failwith "BinaryHeap get\_last not implemented"
+\end{alertblock}
+
+{\tiny
+\begin{block}{get\_last}
+\begin{verbatim}
+ let rec get_last (t : tree) : elt * queue =
+      match t with
+      | Leaf e -> (e, Empty)
+      | OneBranch (e1, e2) -> (e2, Tree (Leaf e1))
+      | TwoBranch (even_or_odd, e, t1, t2) ->
+        (match even_or_odd with
+         | Odd -> (match t1 with
+                   | Leaf last -> (last, Tree (OneBranch (e, get_top t2)))
+                   | _ -> (fst (get_last t1),
+                           Tree (TwoBranch
+                                 (Even, e, (extract_tree (snd (get_last t1))),
+                                            t2))))
+         | Even -> (match t2 with
+                   | Leaf last -> (last, Tree (OneBranch(e, get_top t1)))
+                   | _ -> (fst (get_last t2),
+                           Tree (TwoBranch
+                                (Odd, e, t1,
+                                           (extract_tree (snd (get_last t2))))))))
+\end{verbatim}
+\end{block}
+}
+
+
