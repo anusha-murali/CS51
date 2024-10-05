@@ -1,0 +1,12 @@
+### Starting build.
+# Target: ex.ml.depends, tags: { package(CS51Utils), package(graphics), warn(A-4-33-40-41-42-43-34-44), extension:ml, file:ex.ml, ocaml, ocamldep, quiet, strict-sequence, thread, traverse, use_str }
+ocamldep.opt -modules ex.ml > ex.ml.depends
+# Target: ex.cmo, tags: { package(CS51Utils), package(graphics), warn(A-4-33-40-41-42-43-34-44), byte, compile, extension:cmo, extension:ml, file:ex.cmo, file:ex.ml, implem, ocaml, quiet, strict-sequence, thread, traverse, use_str }
+ocamlc.opt -c -thread -strict-sequence -w A-4-33-40-41-42-43-34-44 -o ex.cmo ex.ml
++ ocamlc.opt -c -thread -strict-sequence -w A-4-33-40-41-42-43-34-44 -o ex.cmo ex.ml
+File "ex.ml", line 25, characters 13-18:
+25 | let solved : board =
+                  ^^^^^
+Error: Unbound type constructor board
+Command exited with code 2.
+# Compilation unsuccessful.
